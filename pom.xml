@@ -12,13 +12,14 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <amazon-sdk.version>1.10.58</amazon-sdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.3.2.RELEASE</version>
+        <version>1.3.3.RELEASE</version>
     </parent>
 
     <dependencies>
@@ -29,6 +30,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk</artifactId>
+            <version>${amazon-sdk.version}</version>
         </dependency>
     </dependencies>
 

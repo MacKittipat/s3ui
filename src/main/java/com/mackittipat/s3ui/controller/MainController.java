@@ -1,4 +1,4 @@
-package com.mackittipat.springbootexample.controller;
+package com.mackittipat.s3ui.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

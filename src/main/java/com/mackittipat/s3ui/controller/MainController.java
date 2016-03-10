@@ -24,9 +24,6 @@ public class MainController {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Autowired
-    private AWSCredentials awsCredentials;
-
     @RequestMapping(value = "/")
     public String index(Model model) {
         List<String> serverNameList = s3ServerPropertiesBean.getServer().entrySet().stream()
@@ -48,6 +45,13 @@ public class MainController {
         amazonS3Client.setEndpoint(url);
 
         model.addAttribute("bucketList", amazonS3Client.listBuckets());
-        return "buckets";
+        return "bucket";
+    }
+
+    @RequestMapping(value = "/{serverName}/buckets/{bucketName}")
+    public String listBucketObject(Model model, @PathVariable String serverName, @PathVariable String bucketName) {
+        AmazonS3Client amazonS3Client = (AmazonS3Client) applicationContext.getBean("amazonS3Client");
+        model.addAttribute("objectSummaryList", amazonS3Client.listObjects(bucketName).getObjectSummaries());
+        return "bucket_object";
     }
 }

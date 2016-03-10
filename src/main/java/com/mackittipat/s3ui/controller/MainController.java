@@ -5,7 +5,6 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.mackittipat.s3ui.config.bean.S3ServerPropertiesBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,9 +20,6 @@ public class MainController {
     @Autowired
     private S3ServerPropertiesBean s3ServerPropertiesBean;
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
     @RequestMapping(value = "/")
     public String index(Model model) {
         List<String> serverNameList = s3ServerPropertiesBean.getServer().entrySet().stream()
@@ -35,23 +31,28 @@ public class MainController {
 
     @RequestMapping(value = "/{serverName}/buckets")
     public String listBucket(Model model, @PathVariable String serverName) {
-        Map<String, String> serverMap = (Map<String, String>) s3ServerPropertiesBean.getServer().get(serverName);
-        String url = serverMap.get("url");
-        String accessKeyId = serverMap.get("access-key-id");
-        String secretKey = serverMap.get("secret-key");
-
-        AWSCredentials awsCredentials = new BasicAWSCredentials(accessKeyId, secretKey);
-        AmazonS3Client amazonS3Client = (AmazonS3Client) applicationContext.getBean("amazonS3Client", awsCredentials);
-        amazonS3Client.setEndpoint(url);
-
+        AmazonS3Client amazonS3Client = createAmazonS3Client(serverName);
         model.addAttribute("bucketList", amazonS3Client.listBuckets());
         return "bucket";
     }
 
     @RequestMapping(value = "/{serverName}/buckets/{bucketName}")
     public String listBucketObject(Model model, @PathVariable String serverName, @PathVariable String bucketName) {
-        AmazonS3Client amazonS3Client = (AmazonS3Client) applicationContext.getBean("amazonS3Client");
+        AmazonS3Client amazonS3Client = createAmazonS3Client(serverName);
         model.addAttribute("objectSummaryList", amazonS3Client.listObjects(bucketName).getObjectSummaries());
         return "bucket_object";
+    }
+
+    private AmazonS3Client createAmazonS3Client(String serverName) {
+        Map<String, String> serverMap = (Map<String, String>) s3ServerPropertiesBean.getServer().get(serverName);
+        String url = serverMap.get("url");
+        String accessKeyId = serverMap.get("access-key-id");
+        String secretKey = serverMap.get("secret-key");
+
+        AWSCredentials awsCredentials = new BasicAWSCredentials(accessKeyId, secretKey);
+        AmazonS3Client amazonS3Client = new AmazonS3Client(awsCredentials);
+        amazonS3Client.setEndpoint(url);
+
+        return amazonS3Client;
     }
 }

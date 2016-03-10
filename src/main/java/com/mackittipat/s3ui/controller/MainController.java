@@ -21,22 +21,22 @@ public class MainController {
     private S3ServerPropertiesBean s3ServerPropertiesBean;
 
     @RequestMapping(value = "/")
-    public String index(Model model) {
+    public String server(Model model) {
         List<String> serverNameList = s3ServerPropertiesBean.getServer().entrySet().stream()
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
         model.addAttribute("serverNameList", serverNameList);
-        return "index";
+        return "server";
     }
 
-    @RequestMapping(value = "/{serverName}/buckets")
+    @RequestMapping(value = "/{serverName}")
     public String listBucket(Model model, @PathVariable String serverName) {
         AmazonS3Client amazonS3Client = createAmazonS3Client(serverName);
         model.addAttribute("bucketList", amazonS3Client.listBuckets());
         return "bucket";
     }
 
-    @RequestMapping(value = "/{serverName}/buckets/{bucketName}")
+    @RequestMapping(value = "/{serverName}/{bucketName}")
     public String listBucketObject(Model model, @PathVariable String serverName, @PathVariable String bucketName) {
         AmazonS3Client amazonS3Client = createAmazonS3Client(serverName);
         model.addAttribute("objectSummaryList", amazonS3Client.listObjects(bucketName).getObjectSummaries());

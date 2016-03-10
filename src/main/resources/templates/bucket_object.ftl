@@ -1,8 +1,14 @@
 <#import "macro/layout.ftl" as my>
 <@my.layout>
-    <#list objectSummaryList as objectSummary>
+    <h1>Object</h1>
     <div>
-        ${objectSummary.key}
+        <a href="${rc.contextPath}">Server</a> >
+        <a href="${rc.contextPath}/${serverName}">Bucket</a> >
+        Object
     </div>
-    </#list>
+    <ul class="collection">
+        <#list objectSummaryList as objectSummary>
+            <li class="collection-item">${objectSummary.key}</li>
+        </#list>
+    </ul>
 </@my.layout>

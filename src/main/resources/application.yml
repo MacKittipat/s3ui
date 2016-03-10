@@ -1,2 +1,3 @@
 server.port: 9001
-server.servlet-path: /s3ui
+server.context-path: /s3ui/
+spring.freemarker.request-context-attribute: rc

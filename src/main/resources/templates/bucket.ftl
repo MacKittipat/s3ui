@@ -1,8 +1,13 @@
 <#import "macro/layout.ftl" as my>
 <@my.layout>
-    <#list bucketList as bucket>
-        <div>
-            <a href="buckets/${bucket.name}/">${bucket.name}</a>
-        </div>
-    </#list>
+    <h1>Bucket</h1>
+    <div>
+        <a href="${rc.contextPath}">Server</a> >
+        Bucket
+    </div>
+    <div class="collection">
+        <#list bucketList as bucket>
+            <a href="${serverName}/${bucket.name}/" class="collection-item">${bucket.name}</a>
+        </#list>
+    </div>
 </@my.layout>

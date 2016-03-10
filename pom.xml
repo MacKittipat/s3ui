@@ -52,6 +52,9 @@
                 -->
                 <configuration>
                     <addResources>true</addResources>
+                    <jvmArguments>
+                        -Dspring.config.location=classpath:/application.yml,classpath:/override.yml
+                    </jvmArguments>
                 </configuration>
             </plugin>
         </plugins>

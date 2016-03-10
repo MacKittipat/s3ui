@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +24,9 @@ public class MainController {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private AWSCredentials awsCredentials;
+
     @RequestMapping(value = "/")
     public String index(Model model) {
         List<String> serverNameList = s3ServerPropertiesBean.getServer().entrySet().stream()
@@ -34,5 +36,18 @@ public class MainController {
         return "index";
     }
 
+    @RequestMapping(value = "/{serverName}/buckets")
+    public String listBucket(Model model, @PathVariable String serverName) {
+        Map<String, String> serverMap = (Map<String, String>) s3ServerPropertiesBean.getServer().get(serverName);
+        String url = serverMap.get("url");
+        String accessKeyId = serverMap.get("access-key-id");
+        String secretKey = serverMap.get("secret-key");
 
+        AWSCredentials awsCredentials = new BasicAWSCredentials(accessKeyId, secretKey);
+        AmazonS3Client amazonS3Client = (AmazonS3Client) applicationContext.getBean("amazonS3Client", awsCredentials);
+        amazonS3Client.setEndpoint(url);
+
+        model.addAttribute("bucketList", amazonS3Client.listBuckets());
+        return "buckets";
+    }
 }

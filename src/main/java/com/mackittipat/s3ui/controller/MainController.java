@@ -65,6 +65,7 @@ public class MainController {
                         e -> e.getValue().toString()));
         model.addAttribute("s3ObjectMetaDataMap", s3ObjectMetaDataMap);
 
+        model.addAttribute("key", key);
         return "object_info";
     }
 

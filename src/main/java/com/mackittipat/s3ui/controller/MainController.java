@@ -33,27 +33,30 @@ public class MainController {
     }
 
     @RequestMapping(value = "/{serverName}")
-    public String showBucketList(Model model, @PathVariable String serverName) {
+    public String showBucketList(Model model,
+                                 @PathVariable String serverName) {
         AmazonS3Client amazonS3Client = createAmazonS3Client(serverName);
         model.addAttribute("bucketList", amazonS3Client.listBuckets());
         return "bucket";
     }
 
     @RequestMapping(value = "/{serverName}/{bucketName}")
-    public String showObjectList(Model model, @PathVariable String serverName, @PathVariable String bucketName) {
+    public String showObjectList(Model model,
+                                 @PathVariable String serverName,
+                                 @PathVariable String bucketName) {
         AmazonS3Client amazonS3Client = createAmazonS3Client(serverName);
         model.addAttribute("objectSummaryList", amazonS3Client.listObjects(bucketName).getObjectSummaries());
-        return "bucket_object";
+        return "object";
     }
 
     @RequestMapping(value = "/{serverName}/{bucketName}/object")
-    public String showObject(Model model,
-                             @PathVariable String serverName,
-                             @PathVariable String bucketName,
-                             @RequestParam String objectKey) {
+    public String showObjectInfo(Model model,
+                                 @PathVariable String serverName,
+                                 @PathVariable String bucketName,
+                                 @RequestParam String key) {
         AmazonS3Client amazonS3Client = createAmazonS3Client(serverName);
 
-        S3Object s3Object = amazonS3Client.getObject(bucketName, objectKey);
+        S3Object s3Object = amazonS3Client.getObject(bucketName, key);
         model.addAttribute("s3Object", s3Object);
 
         Map<String, String> s3ObjectMetaDataMap = s3Object.getObjectMetadata().getRawMetadata().entrySet().stream()
@@ -62,7 +65,7 @@ public class MainController {
                         e -> e.getValue().toString()));
         model.addAttribute("s3ObjectMetaDataMap", s3ObjectMetaDataMap);
 
-        return "object";
+        return "object_info";
     }
 
     private AmazonS3Client createAmazonS3Client(String serverName) {

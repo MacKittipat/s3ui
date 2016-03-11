@@ -1,17 +1,14 @@
 <#import "macro/layout.ftl" as my>
 <@my.layout>
-    <h1>Object Detail</h1>
+    <h1>Objects</h1>
     <div>
         <a href="${rc.contextPath}/">Servers</a> >
         <a href="${rc.contextPath}/${serverName}/">Buckets</a> >
-        <a href="${rc.contextPath}/${serverName}/${bucketName}/">Objects</a> >
-        Object Detail
+        Objects
     </div>
-    <div>
-        <#list s3ObjectMetaDataMap?keys as key>
-            <div>
-                ${key} = ${s3ObjectMetaDataMap[key]}
-            </div>
+    <ul class="collection">
+        <#list objectSummaryList as objectSummary>
+            <a href="${rc.contextPath}/${serverName}/${bucketName}/object?key=${objectSummary.key}" class="collection-item">${objectSummary.key}</a>
         </#list>
-    </div>
+    </ul>
 </@my.layout>

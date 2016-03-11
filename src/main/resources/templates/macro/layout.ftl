@@ -8,6 +8,15 @@
 </head>
 <body>
     <div class="container">
+        <div class="row">
+            <div class="col s12">
+                <h1>
+                    <a href="${rc.contextPath}/">
+                        s3ui
+                    </a>
+                </h1>
+            </div>
+        </div>
         <#nested />
     </div>
 </body>

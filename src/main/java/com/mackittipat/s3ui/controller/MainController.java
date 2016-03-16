@@ -4,7 +4,10 @@ import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ListObjectsRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.mackittipat.s3ui.config.bean.S3ServerPropertiesBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,9 +46,25 @@ public class MainController {
     @RequestMapping(value = "/{serverName}/{bucketName}")
     public String showObjectList(Model model,
                                  @PathVariable String serverName,
-                                 @PathVariable String bucketName) {
+                                 @PathVariable String bucketName,
+                                 @RequestParam(required = false) String nextMarker) {
         AmazonS3Client amazonS3Client = createAmazonS3Client(serverName);
-        model.addAttribute("objectSummaryList", amazonS3Client.listObjects(bucketName).getObjectSummaries());
+
+        ListObjectsRequest listObjectsRequest = new ListObjectsRequest();
+        listObjectsRequest.setBucketName(bucketName);
+        listObjectsRequest.setMaxKeys(4);
+        if(nextMarker != null) {
+            listObjectsRequest.setMarker(nextMarker);
+        }
+
+        ObjectListing objectListing = amazonS3Client.listObjects(listObjectsRequest);
+        List<S3ObjectSummary> s3ObjectSummaryList = objectListing.getObjectSummaries();
+        model.addAttribute("objectSummaryList", s3ObjectSummaryList);
+
+        if(objectListing.isTruncated()) {
+            model.addAttribute("nextMarker", objectListing.getNextMarker());
+        }
+
         return "object";
     }
 

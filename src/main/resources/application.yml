@@ -1,3 +1,6 @@
 server.port: 9001
 server.context-path: /s3ui/
+
 spring.freemarker.request-context-attribute: rc
+
+app.pagination.size: 300

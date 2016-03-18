@@ -10,6 +10,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.mackittipat.s3ui.config.bean.S3ServerPropertiesBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +26,9 @@ public class MainController {
 
     @Autowired
     private S3ServerPropertiesBean s3ServerPropertiesBean;
+
+    @Value(value = "${app.pagination.size}")
+    private Integer paginationSize;
 
     @RequestMapping(value = "/")
     public String showServerList(Model model) {
@@ -52,7 +56,7 @@ public class MainController {
 
         ListObjectsRequest listObjectsRequest = new ListObjectsRequest();
         listObjectsRequest.setBucketName(bucketName);
-        listObjectsRequest.setMaxKeys(4);
+        listObjectsRequest.setMaxKeys(paginationSize);
         if(nextMarker != null) {
             listObjectsRequest.setMarker(nextMarker);
         }
